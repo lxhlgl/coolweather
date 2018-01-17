@@ -87,10 +87,9 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString("weather", null);
-        final String weatherId;
+        String weatherId;
         if (weatherString != null) {
             Weather weather = Utility.handleWeatherResponse(weatherString);
-            weatherId = weather.basic.weatherId;
             showWeatherInfo(weather);
         } else {
             weatherId = getIntent().getStringExtra("weather_id");
@@ -101,7 +100,11 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather(weatherId);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                        WeatherActivity.this);
+                String weatherString = preferences.getString("weather", null);
+                Weather weather = Utility.handleWeatherResponse(weatherString);
+                requestWeather(weather.basic.weatherId);
             }
         });
         String bingPic = preferences.getString("bing_pic", null);
